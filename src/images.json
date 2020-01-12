@@ -1,5 +1,6 @@
 [
   "background",
+  "minimap-background",
   "player-idle",
   "player-running-1",
   "player-running-2"

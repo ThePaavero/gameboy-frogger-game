@@ -61,7 +61,6 @@ const Game = (playground) => {
   }
 
   const updateState = () => {
-
     updatePlayer()
     updateDebugView()
   }
@@ -82,15 +81,24 @@ const Game = (playground) => {
     state.player.y = config.height - (state.player.height + 2)
   }
 
+  const drawBackground = () => {
+    playground.layer.drawImage(playground.images['background'], 0, 0, config.width, config.height)
+  }
+
+  const drawPlayer = () => {
+    playground.layer.drawImage(playground.images['player-idle'], state.player.x, state.player.y, state.player.width, state.player.height)
+  }
+
+  const drawMiniMap = () => {
+    playground.layer.drawImage(playground.images['minimap-background'], config.width - 31, config.height - (27 + 2), 29, 27)
+  }
+
   const draw = () => {
     // Clear frame.
     playground.layer.clear('#0f380f')
-
-    // Draw static background.
-    playground.layer.drawImage(playground.images['background'], 0, 0, config.width, config.height)
-
-    // Draw player.
-    playground.layer.drawImage(playground.images['player-idle'], state.player.x, state.player.y, state.player.width, state.player.height)
+    drawBackground()
+    drawPlayer()
+    drawMiniMap()
   }
 
   const onKeyUp = (data) => {
