@@ -7,7 +7,7 @@ export default {
     y: 0,
     width: 5,
     height: 10,
-    speed: 1,
+    speed: 0.4,
     velocities: {
       x: 0,
       y: 0,

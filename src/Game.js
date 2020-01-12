@@ -221,7 +221,7 @@ const Game = (playground) => {
       height: type.height,
     }
     state.cars.push(car)
-    setTimeout(spawnCar, _.random(500, 600))
+    setTimeout(spawnCar, _.random(300, 500))
   }
 
   const objectsOverlap = (a, b) => {
