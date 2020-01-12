@@ -3,5 +3,8 @@
   "minimap-background",
   "player-idle",
   "player-running-1",
-  "player-running-2"
+  "player-running-2",
+  "car-sedan",
+  "car-wagon",
+  "car-truck"
 ]

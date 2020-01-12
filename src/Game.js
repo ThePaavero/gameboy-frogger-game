@@ -2,6 +2,7 @@ import state from './state'
 import imagesArray from './images'
 import config from './config'
 import DebugView from './lib/DebugView'
+import _ from 'lodash'
 
 const Game = (playground) => {
 
@@ -17,6 +18,7 @@ const Game = (playground) => {
     window.addEventListener('resize', handleAspectRatio)
     handleAspectRatio()
     resetPlayerPosition()
+    startGame()
   }
 
   const handleAspectRatio = () => {
@@ -60,8 +62,31 @@ const Game = (playground) => {
     keepWithinArea(state.player)
   }
 
+  const removeCar = (car) => {
+    state.cars = state.cars.filter(c => c !== car)
+  }
+
+  const updateCars = () => {
+    state.cars.forEach(car => {
+      car.x += car.direction === 'FROM_LEFT' ? car.speed : car.speed * -1
+      switch (car.direction) {
+        case 'FROM_LEFT':
+          if (car.x > config.width) {
+            removeCar(car)
+          }
+          break
+        case 'FROM_RIGHT':
+          if (car.x < car.width * -1) {
+            removeCar(car)
+          }
+          break
+      }
+    })
+  }
+
   const updateState = () => {
     updatePlayer()
+    updateCars()
     updateDebugView()
   }
 
@@ -93,11 +118,31 @@ const Game = (playground) => {
     playground.layer.drawImage(playground.images['minimap-background'], config.width - 31, config.height - (27 + 2), 29, 27)
   }
 
+  const carIsInView = (car) => {
+    // @todo
+    return true
+  }
+
+  const drawCars = () => {
+    state.cars.forEach(car => {
+      if (!carIsInView(car)) {
+        return
+      }
+      const imageSlug = `car-${car.type.slug}`
+      console.log(imageSlug)
+      if (!playground.images[imageSlug]) {
+        return
+      }
+      playground.layer.drawImage(playground.images[imageSlug], car.x, car.x, car.width, car.height)
+    })
+  }
+
   const draw = () => {
     // Clear frame.
     playground.layer.clear('#0f380f')
     drawBackground()
     drawPlayer()
+    drawCars()
     drawMiniMap()
   }
 
@@ -141,6 +186,35 @@ const Game = (playground) => {
         state.player.velocities.y = state.player.speed
         break
     }
+  }
+
+  const getRandomCarType = () => {
+    return state.carTypes[_.random(0, state.carTypes.length - 1)]
+  }
+
+  const spawnCar = () => {
+    const direction = _.random(0, 1) === 0 ? 'FROM_LEFT' : 'FROM_RIGHT'
+    const type = getRandomCarType()
+    const centerYOffset = 60
+    const car = {
+      type,
+      speed: 1,
+      direction,
+      x: direction === 'FROM_LEFT' ? type.width * -1 : type.width,
+      y: direction === 'FROM_LEFT' ? config.height - centerYOffset - (type.height / 2) : centerYOffset,
+      width: type.width,
+      height: type.height,
+    }
+    state.cars.push(car)
+    setTimeout(spawnCar, _.random(2000, 6000))
+  }
+
+  const onStartGame = () => {
+    spawnCar()
+  }
+
+  const startGame = () => {
+    onStartGame()
   }
 
   const init = () => {

@@ -13,4 +13,22 @@ export default {
       y: 0,
     },
   },
+  carTypes: [
+    {
+      slug: 'sedan',
+      width: 19,
+      height: 10,
+    },
+    {
+      slug: 'wagon',
+      width: 22,
+      height: 10,
+    },
+    {
+      slug: 'truck',
+      width: 30,
+      height: 20,
+    }
+  ],
+  cars: [],
 }
