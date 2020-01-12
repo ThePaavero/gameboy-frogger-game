@@ -118,22 +118,10 @@ const Game = (playground) => {
     playground.layer.drawImage(playground.images['minimap-background'], config.width - 31, config.height - (27 + 2), 29, 27)
   }
 
-  const carIsInView = (car) => {
-    // @todo
-    return true
-  }
-
   const drawCars = () => {
     state.cars.forEach(car => {
-      if (!carIsInView(car)) {
-        return
-      }
-      const imageSlug = `car-${car.type.slug}`
-      console.log(imageSlug)
-      if (!playground.images[imageSlug]) {
-        return
-      }
-      playground.layer.drawImage(playground.images[imageSlug], car.x, car.x, car.width, car.height)
+      const imageSlug = `car-${car.type.slug}${car.direction === 'FROM_LEFT' ? '-FROM_LEFT' : ''}`
+      playground.layer.drawImage(playground.images[imageSlug], car.x, car.y, car.width, car.height)
     })
   }
 
@@ -192,21 +180,32 @@ const Game = (playground) => {
     return state.carTypes[_.random(0, state.carTypes.length - 1)]
   }
 
+  const getYforCarByLane = (laneNumber) => {
+    const lazyMap = {
+      1: 34,
+      2: 60,
+      3: 86,
+      4: 111,
+    }
+    return lazyMap[laneNumber]
+  }
+
   const spawnCar = () => {
-    const direction = _.random(0, 1) === 0 ? 'FROM_LEFT' : 'FROM_RIGHT'
+    const lane = _.random(1, 4)
+    const direction = lane > 2 ? 'FROM_LEFT' : 'FROM_RIGHT'
     const type = getRandomCarType()
-    const centerYOffset = 60
     const car = {
+      lane: _.random(1, 4),
       type,
       speed: 1,
       direction,
-      x: direction === 'FROM_LEFT' ? type.width * -1 : type.width,
-      y: direction === 'FROM_LEFT' ? config.height - centerYOffset - (type.height / 2) : centerYOffset,
+      x: direction === 'FROM_LEFT' ? type.width * -1 : config.width + type.width,
+      y: getYforCarByLane(lane) - type.height / 2,
       width: type.width,
       height: type.height,
     }
     state.cars.push(car)
-    setTimeout(spawnCar, _.random(2000, 6000))
+    setTimeout(spawnCar, _.random(500, 600))
   }
 
   const onStartGame = () => {

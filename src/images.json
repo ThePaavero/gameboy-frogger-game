@@ -6,5 +6,8 @@
   "player-running-2",
   "car-sedan",
   "car-wagon",
-  "car-truck"
+  "car-truck",
+  "car-sedan-FROM_LEFT",
+  "car-wagon-FROM_LEFT",
+  "car-truck-FROM_LEFT"
 ]
