@@ -84,10 +84,21 @@ const Game = (playground) => {
     })
   }
 
+  const doCollisionDetections = () => {
+    state.cars.forEach(car => {
+      if (objectsOverlap(state.player, car)) {
+        console.log('OUCH!')
+      }
+    })
+  }
+
   const updateState = () => {
     updatePlayer()
     updateCars()
     updateDebugView()
+    if (state.cars.length > 0) {
+      doCollisionDetections()
+    }
   }
 
   const updateDebugView = () => {
@@ -193,6 +204,11 @@ const Game = (playground) => {
   const spawnCar = () => {
     const lane = _.random(1, 4)
     const direction = lane > 2 ? 'FROM_LEFT' : 'FROM_RIGHT'
+
+    // Make sure we can fit here.
+    const previousCarInThisLane = state.cars.filter(c => c.lane === lane)[0]
+    // @todo.
+
     const type = getRandomCarType()
     const car = {
       lane: _.random(1, 4),
@@ -206,6 +222,15 @@ const Game = (playground) => {
     }
     state.cars.push(car)
     setTimeout(spawnCar, _.random(500, 600))
+  }
+
+  const objectsOverlap = (a, b) => {
+    return !(
+      ((a.y + a.height) < (b.y)) ||
+      (a.y > (b.y + b.height)) ||
+      ((a.x + a.width) < b.x) ||
+      (a.x > (b.x + b.width))
+    )
   }
 
   const onStartGame = () => {
